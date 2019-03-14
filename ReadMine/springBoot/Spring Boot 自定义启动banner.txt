@@ -1,0 +1,31 @@
+Spring Boot 自定义启动banner
+	参考网址：	
+		http://blog.csdn.net/qq_20989105/article/details/78201396
+		http://blog.csdn.net/baochanghong/article/details/54286422
+		https://www.cnblogs.com/liuchuanfeng/p/6845528.html
+	
+	控制banner是否开启，输出位置
+		@SpringBootApplication
+		public class BootdemoApplication {
+		    public static void main(String[] args) {
+		        SpringApplication springApplication = new SpringApplication(BootdemoApplication.class);
+		        springApplication.setBannerMode(Banner.Mode.OFF);
+		        springApplication.run(args);
+		    }
+		 
+		}	
+
+	在Spring Boot工程的/src/main/resources目录下创建一个banner.txt文件，然后将ASCII字符画复制进去，就能替换默认的banner了。
+		banner.txt文件设置：
+		    ${AnsiColor.BRIGHT_RED}：设置控制台中输出内容的颜色
+		    ${application.version}：用来获取MANIFEST.MF文件中的版本号
+		    ${application.formatted-version}：格式化后的${application.version}版本信息
+		    ${spring-boot.version}：Spring Boot的版本号
+		    ${spring-boot.formatted-version}：格式化后的${spring-boot.version}版本信息
+		    
+	生成工具
+		我们可以借助下面这些工具，轻松地根据文字或图片来生成用于Banner输出的字符画。
+	    http://patorjk.com/software/taag
+	    http://www.network-science.de/ascii/
+	    http://www.degraeve.com/img2txt.php
+	

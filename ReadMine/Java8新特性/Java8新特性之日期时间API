@@ -1,0 +1,280 @@
+ Java 8 新特性：Java 类库的新特性之日期时间API (Date/Time API )
+ 
+ 参考：	
+ 		https://leongfeng.github.io/2016/12/07/java8-time-api-learning/
+ 		http://www.cnblogs.com/comeboo/p/5378922.html
+ 		http://blog.csdn.net/sun_promise/article/details/51383618
+ 		http://blog.csdn.net/u013604031/article/details/49812941
+ 
+ 
+1.Java8之前java.util.Date和Calendar类的弊端
+1）最开始的时候，Date既要承载日期信息，又要做日期之间的转换，还要做不同日期格式的显示，职责较繁杂（不遵守单一职责）。
+后来从JDK 1.1 开始，这三项职责分开了：
+使用Calendar类实现日期和时间字段之间转换；
+使用DateFormat类来格式化和分析日期字符串；
+Date只用来承载日期和时间信息。
+现在原有Date中的相应方法已废弃。无论是Date，还是Calendar，都使用着太不方便，这是API没有设计好的地方。
+2）令人无语的year和month（month是从0开始的），如：
+	Date date = new Date(2016,1,1);     
+	System.out.println(date);   
+	输出结果：Tue Feb 01 00:00:00 CST 3916
+这样得到的结果year为2012+1900，而month明明给定的参数是1，却输出的是二月。
+设置日期可以用java.util.Calendar
+	Calendar calendar = Calendar.getInstance();     
+	calendar.set(2016, 5, 2); 
+虽然Calendar年份的传值不需要减去1900，但Calendar的month也是从0开始的，表达5月份应该用4这个数字。
+3）java.util.Date与java.util.Calendar中的所有属性都是可变的，且线程不安全。
+	例子：
+	public class Test {  
+	  
+	    public static void main(String[] args) {  
+	        Calendar birth = Calendar.getInstance();  
+	        birth.set(1975, Calendar.MAY, 26);  
+	        Calendar now = Calendar.getInstance();  
+	        System.out.println(daysBetween(birth, now)); // 输出结果为14963，值不固定  
+	        System.out.println(daysBetween(birth, now)); // 输出结果 显示 0？  
+	  
+	    }  
+	}  
+	    public static long daysBetween(Calendar begin, Calendar end) {     
+	         long daysBetween = 0;     
+	         while(begin.before(end)) {     
+	             begin.add(Calendar.DAY_OF_MONTH, 1);     
+	             daysBetween++;     
+	        }     
+	        return daysBetween;     
+	    }   
+	  
+	} 
+Note:daysBetween有点问题，如果连续计算两个Date实例的话，第二次会取得0，因为Calendar状态是可变的，考虑到重复计算的场合，
+最好复制一个新的Calendar。修改代码如下：
+	public static long daysBetween(Calendar begin, Calendar end) {     
+	    Calendar calendar = (Calendar) begin.clone(); // 复制     
+	        long daysBetween = 0;     
+	        while(calendar.before(end)) {     
+	            calendar.add(Calendar.DAY_OF_MONTH, 1);     
+	            daysBetween++;     
+	        }     
+	        return daysBetween;        
+	}   
+	
+2.简述 新的日期时间API
+Java 的日期与时间 API 问题由来已久，Java 8 之前的版本中关于时间、日期及其他时间日期格式化类由于线程安全、重量级、
+序列化成本高等问题而饱受批评。Java 8 吸收了 Joda-Time 的精华，以一个新的开始为 Java 创建优秀的 API。
+新的 java.time 中包含了所有关于时钟（Clock），本地日期（LocalDate）、本地时间（LocalTime）、本地日期时间（LocalDateTime）、
+时区（ZonedDateTime）和持续时间（Duration）的类。历史悠久的 Date 类新增了 toInstant() 方法，
+用于把 Date 转换成新的表示形式。这些新增的本地化时间日期 API 大大简化了了日期时间和本地化的管理。
+目前Java8新增了java.time包定义的类表示日期-时间概念的规则，很方便使用；最重要的一点是值不可变，且线程安全。
+	LocalDateTime		默认格式		yyyy-MM-ddTHH:mm:ss
+	LocalDate			默认格式		yyyy-MM-dd
+	LocalTime			默认格式		HH:mm:ss
+	OffsetDateTime		默认格式		yyyy-MM-ddTHH:mm:ss + HH:mm:ss
+	OffsetTime			默认格式		HH:mm:ss + HH:mm:ss
+	ZonedDateTime		默认格式		yyyy-MM-ddTHH:mm:ss + HH:mm:ss	Zoned
+	Year				默认格式		yyyy
+	YearMonth			默认格式		yyyy-MM
+	MonthDay			默认格式		-MM-dd
+	Instant ----- 与java.util.Date相似
+Note：不过尽管有了新的API，但仍有一个严重的问题——大量的旧代码和库仍然在使用老的API。现在，Java 8解决了这个问题，它给Date类增加了一个新的方法toInstant()，可以将Date转化成新的实例。这样就可以切换到新的API。
+对于新API：
+	非常有用的值类型：
+	Instant ----- 与java.util.Date相似 --瞬时实例
+	ZonedDateTime ----- ZoneId -时区很重要的时候使用
+	OffsetDateTime ----- OffsetTime, ZoneOffset -对UTC的偏移处理	最完整的日期时间，包含时区和相对UTC或格林威治的时差。
+	Duration, Period ----- 但如果你想找到两个日期之间的时间量，你可能会寻找 ChronoUnit 代替（详情见下文）
+	其他有用的类型：
+	DateTimeFormatter ----- 将日期类型转换成字符串类型
+	ChronoUnit ----- 计算出两点之间的时间量，例如	ChronoUnit.DAYS.between(t1, t2)
+	TemporalAdjuster ----- 例如	date.with(TemporalAdjuster.firstDayOfMonth())
+	Note：大多数情况下，新的值类型由JDBC提供支持。有一小部分异常，eg：ZonedDateTime在SQL中没有对应的（类型）。
+	
+3.Java 新旧日期API的区别
+	java.time				java.util.Date和Calendar
+	流畅的API						不流畅的API	
+	实例不可变						实例可变
+	线程安全						非线程安全
+	
+4.java.time包下的类
+4.1 Clock类
+	Clock类提供了访问当前日期和时间的方法。
+	Clock使用时区来访问当前的instant, date和time。
+	Clock类可以替换 System.currentTimeMillis() 和 TimeZone.getDefault()。
+	例子：
+    	Clock clock1 = Clock.systemDefaultZone();//获取系统默认时区 (当前瞬时时间 )  
+		System.out.println( "系统时间日期："+clock1.instant() );  
+       	System.out.println( "时间毫秒："+clock1.millis() );  
+	    final Clock clock = Clock.systemUTC();//获取系统时钟，并将其转换成使用UTC时区的日期和时间  
+        System.out.println( "时间日期："+clock.instant() );  
+  		System.out.println( "时间毫秒值："+clock.millis() );	
+		输出结果：
+		系统时间日期：2016-05-12T07:42:37.883Z
+		时间毫秒：1463038957894
+		时间日期：2016-05-12T07:42:37.894Z
+		时间毫秒值：1463038957894 		
+ 	某一个特定的时间点也可以使用Instant类来表示，Instant类也可以用来创建老的java.util.Date对象。 如下：		
+  		Instant instant = clock1.instant();  
+        Date javadate = Date.from(instant);   
+        System.out.println( "date："+javadate);  
+		 输出结果：
+		date：Thu May 12 15:47:00 CST 2016 		
+4.2 ZoneId（时区）
+	在新API中时区使用ZoneId来表示。时区可以很方便的使用静态方法of()来获取到。
+	时区定义了到UTS时间的时间差，在Instant时间点对象到本地日期对象之间转换的时候是极其重要的。
+	// 输出所有可见的时区ID，eg：Asia/Aden, America/Cuiaba, Etc/GMT+9等  
+		System.out.println(ZoneId.getAvailableZoneIds());  
+		ZoneId zone1 = ZoneId.of("Europe/Berlin");  
+		ZoneId zone2 = ZoneId.of("Brazil/East");  
+		System.out.println(zone1.getRules());  
+		System.out.println(zone2.getRules());  
+		输出结果：
+		[Asia/Aden, America/Cuiaba,  .... ,Europe/Monaco]
+		ZoneRules[currentStandardOffset=+01:00]
+		ZoneRules[currentStandardOffset=-03:00]
+4.3 LocalTime（本地时间）
+	LocalTime 定义了一个没有时区信息的时间。
+	1）获取现在的本地时间
+		final LocalTime time = LocalTime.now();  
+		ZoneId clock = ZoneId.of("Asia/Shanghai");
+		final LocalTime timeFromClock = LocalTime.now( clock  );  
+		System.out.println( time );  
+		System.out.println( timeFromClock );    		
+		输出结果：
+		09:21:13.556
+		09:21:13.556
+	2）按时区显示时间  
+		ZoneId zone1 = ZoneId.of("Europe/Berlin");  
+        ZoneId zone2 = ZoneId.of("Brazil/East");           
+        LocalTime now1 = LocalTime.now(zone1);  
+        LocalTime now2 = LocalTime.now(zone2);  
+        System.out.println("时区：Europe/Berlin---"+now1);   
+        System.out.println("时区：Brazil/East---"+now2);  			
+		输出结果：
+		时区：Europe/Berlin---10:03:23.217
+		时区：Brazil/East---05:03:23.217  	
+	LocalTime 提供了多种工厂方法来简化对象的创建，包括解析时间字符串。
+		LocalTime late = LocalTime.of(22, 12, 18);//时分秒  
+        System.out.println(late); // 输出结果：22:12:18  
+        DateTimeFormatter germanFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)  
+                .withLocale(Locale.GERMAN);  
+        LocalTime leetTime = LocalTime.parse("15:39", germanFormatter);  
+        System.out.println(leetTime); // 输出结果： 15:39  
+4.4 LocalDate(本地日期)
+	LocalDate 表示了一个确切的日期（eg： 2014-03-11）。该对象值是不可变的，使用方式和LocalTime基本一致。				
+		Clock clock = Clock.systemDefaultZone();// 获取系统默认时区 (当前瞬时时间 )  
+        // Get the local date and local time  
+        final LocalDate date = LocalDate.now();  
+        final LocalDate dateFromClock = LocalDate.now(clock);  
+        System.out.println(date);  
+        System.out.println(dateFromClock);    		
+		输出结果:
+		2017-11-21
+		2017-11-21  		
+  	从字符串解析一个LocalDate类型和解析LocalTime一样简单.
+  		DateTimeFormatter germanFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)  
+        							.withLocale(Locale.GERMAN);   
+		LocalDate xmas = LocalDate.parse("25.10.2016", germanFormatter);  
+		System.out.println(xmas); 
+		输出结果：
+		2016-10-25  	
+4.5 LocalDateTime（本地日期时间）
+	表示了具体时间和日期。LocalDateTime和LocalTime还有LocalDate一样，都是不可变的。
+	LocalDateTime提供了一些能访问具体字段的方法。	
+	1）		
+		Clock clock = Clock.systemDefaultZone();// 获取系统默认时区 (当前瞬时时间 )  
+        // Get the local date/time  
+        final LocalDateTime datetime = LocalDateTime.now();  
+        final LocalDateTime datetimeFromClock = LocalDateTime.now(clock);  
+        System.out.println(datetime);  
+        System.out.println(datetimeFromClock);	
+		 输出结果：
+		2016-05-12T16:33:17.546
+		2016-05-12T16:33:17.546
+	2）
+		LocalDateTime sylvester = LocalDateTime.of(2016, Month.DECEMBER, 31, 23, 59, 59);  
+	    DayOfWeek dayOfWeek = sylvester.getDayOfWeek();  
+	    System.out.println(dayOfWeek);        
+	    Month month = sylvester.getMonth();  
+	    System.out.println(month);          
+	    long minuteOfDay = sylvester.getLong(ChronoField.MINUTE_OF_DAY);  
+	    System.out.println(minuteOfDay);    				
+		输出结果：
+		SATURDAY
+		DECEMBER
+		1439	
+	只要附加上时区信息，就可以将其转换为一个时间点Instant对象，Instant时间点对象可以很容易的转换为老式的java.util.Date。		
+		LocalDateTime sylvester = LocalDateTime.of(2016, Month.DECEMBER, 31, 23, 59, 59);  
+        Instant instant = sylvester.atZone(ZoneId.systemDefault()).toInstant();  
+        Date legacyDate = Date.from(instant);  
+        System.out.println(legacyDate);    			
+		输出结果：
+		Sat Dec 31 23:59:59 CST 2016
+	格式化LocalDateTime和格式化时间和日期一样的，除了使用预定义好的格式外，我也可以自定义格式。
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM dd, yyyy - HH:mm");  
+	    LocalDateTime parsed = LocalDateTime.parse("05 03, 2016 - 07:13", formatter);  
+	    String string = formatter.format(parsed);  
+	    System.out.println(string);  	
+		输出结果：
+		05 03, 2016 - 07:13	   
+	Note:和java.text.NumberFormat不一样的是新版的DateTimeFormatter是不可变的，所以它是线程安全的。 
+4.6 ZonedDateTime（日期时间和时区信息）
+	使用ZonedDateTime，它保存有ISO-8601日期系统的日期和时间，而且有时区信息。
+		Clock clock = Clock.systemDefaultZone();// 获取系统默认时区 (当前瞬时时间 )  
+		final ZonedDateTime zonedDatetime = ZonedDateTime.now();  
+		final ZonedDateTime zonedDatetimeFromClock = ZonedDateTime.now(clock);  
+		final ZonedDateTime zonedDatetimeFromZone = ZonedDateTime.now(ZoneId.of("America/Los_Angeles"));  
+		System.out.println(zonedDatetime);  
+		System.out.println(zonedDatetimeFromClock);  
+		System.out.println(zonedDatetimeFromZone);  	    
+		输出结果：
+		2016-05-12T16:59:55.779+08:00[Asia/Shanghai]
+		2016-05-12T16:59:55.779+08:00[Asia/Shanghai]
+		2016-05-12T01:59:55.781-07:00[America/Los_Angeles]	  
+4.7 Duration类
+	Duration持有的时间精确到纳秒。很容易计算两个日期中间的差异。
+	java.time.Duration duration = java.time.Duration.between(LocalDateTime   startTime,  LocalDateTime  endTime );
+	duration.toMinutes()    //两个时间差的分钟数
+	duration.toNanos()		//两个时间差的纳秒
+	duration.toMillis()		//两个时间差的毫秒
+	duration.toHours()		//两个时间差的小时
+	duration.toDays()		//两个时间差的天数
+		final LocalDateTime from = LocalDateTime.of(2014, Month.APRIL, 16, 0, 0, 0);//年月日时分秒  
+		final LocalDateTime to = LocalDateTime.of(2015, Month.APRIL, 16, 23, 59, 59);  
+		final Duration duration = Duration.between(from, to);  
+		System.out.println("Duration in days: " + duration.toDays());  
+		System.out.println("Duration in hours: " + duration.toHours());	  
+		输出结果：
+		Duration in days: 365
+		Duration in hours: 8783	    
+	第二种获取时间差值的方式：ChronoUnit
+		ZoneId zone1 = ZoneId.of("America/Cuiaba");  
+        ZoneId zone2 = ZoneId.of("Brazil/East");  
+        LocalTime now1 = LocalTime.now(zone1);  
+        LocalTime now2 = LocalTime.now(zone2);  
+        long hoursBetween = ChronoUnit.HOURS.between(now1, now2);  
+        long minutesBetween = ChronoUnit.MINUTES.between(now1, now2);  
+        System.out.println(hoursBetween); // 1  
+        System.out.println(minutesBetween); // 60  	
+	第三种获取时间差值的方式：Period类      
+		主要是Period类方法getYears（），getMonths（）和getDays（）来计算.
+			LocalDate today = LocalDate.now();
+	        System.out.println("Today : " + today);
+	        LocalDate birthDate = LocalDate.of(1993, Month.OCTOBER, 19);
+	        System.out.println("BirthDate : " + birthDate);
+	        Period p = Period.between(birthDate, today);
+	        System.out.printf("年龄 : %d 年 %d 月 %d 日", p.getYears(), p.getMonths(), p.getDays());
+			输出结果：
+			Today : 2017-06-16
+			BirthDate : 1993-10-19
+			年龄 : 23 年 7 月 28 日	      	
+5.Java 8日期时间API的重点
+1）提供了javax.time.ZoneId 获取时区。
+2）提供了LocalDate和LocalTime类。
+3）Java 8 的所有日期和时间API都是不可变类并且线程安全，而现有的Date和Calendar API中的java.util.Date和SimpleDateFormat是非线程安全的。
+4）主包是 java.time,包含了表示日期、时间、时间间隔的一些类。里面有两个子包java.time.format用于格式化， java.time.temporal用于更底层的操作。
+5）时区代表了地球上某个区域内普遍使用的标准时间。每个时区都有一个代号，格式通常由区域/城市构成（Asia/Tokyo），在加上与格林威治或 UTC的时差。例如：东京的时差是+09:00。
+6）OffsetDateTime类实际上组合了LocalDateTime类和ZoneOffset类。用来表示包含和格林威治或UTC时差的完整日期（年、月、日）和时间（时、分、秒、纳秒）信息。
+7）DateTimeFormatter 类用来格式化和解析时间。与SimpleDateFormat不同，这个类不可变并且线程安全，需要时可以给静态常量赋值。 DateTimeFormatter类提供了大量的内置格式化工具，同时也允许你自定义。
+在转换方面也提供了parse()将字符串解析成日期，如果解析出错会抛出DateTimeParseException。DateTimeFormatter类同时还有format()用来格式化日期，如果出错会抛出DateTimeException异常。
+8）再补充一点，日期格式“MMM d yyyy”和“MMM dd yyyy”有一些微妙的不同，第一个格式可以解析“Jan 2 2014”和“Jan 14 2014”，而第二个在解析“Jan 2 2014”就会抛异常，因为第二个格式里要求日必须是两位的。
+如果想修正，你必须在日期只有个位数时在前面补零，就是说“Jan 2 2014”应该写成 “Jan 02 2014”。	    
+	    

@@ -5,6 +5,7 @@
 
     <!--声明项目描述符遵循哪一个POM模型版本。模型本身的版本很少改变，虽然如此，但它仍然是必不可少的，这是为了当Maven引入了新的特性或者其他模型变更的时候，确保稳定性。-->
     <modelVersion>4.0.0</modelVersion>
+    
 
     <!-- 公司或者组织的唯一标志，并且配置时生成的路径也是由此生成 -->
     <groupId>com.cxy</groupId>
@@ -47,8 +48,10 @@
         <commons.logging.version>1.2</commons.logging.version>
         <commons.codec.version>1.12</commons.codec.version>
         <guava.version>27.1-jre</guava.version>
+        <sftp.version>0.1.55</sftp.version>
 
         <fastjson.version>1.2.56</fastjson.version>
+        <parserhtml.version>1.11.3</parserhtml.version>
 
         <druid.version>1.1.14</druid.version>
         <mysql.connector.version>5.1.47</mysql.connector.version>
@@ -85,7 +88,11 @@
     <!--依赖关系 该元素描述了项目相关的所有依赖。这些依赖组成了项目构建过程中的一个个环节。它们自动从项目定义的仓库中下载。要获取更多信息，请看项目依赖机制。 -->
     <dependencies>
 
-
+        <!-- 校验框架validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
 
 
         <!-- ******************************* 常用依赖库 ********************************** -->
@@ -158,6 +165,12 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
+        <!-- Sftp 文件上传与下载  -->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>${sftp.version}</version>
+        </dependency>
 
 
         <!-- 数据连接池 -->
@@ -173,6 +186,22 @@
         <!-- 日志依赖处理 start-->
         <!-- https://blog.csdn.net/J080624/article/details/80632121  -->
         <!-- 日志依赖处理 end-->
+
+        <!-- 阿里json处理 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+
+        <!-- HTML 解析 jsoup HTML parser library @ https://jsoup.org/ -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${parserhtml.version}</version>
+        </dependency>
+
+
 
         <!-- 支持 lombok -->
         <dependency>

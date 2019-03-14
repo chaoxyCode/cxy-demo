@@ -1,0 +1,330 @@
+xsd文件规则和语法  (2014-07-24 12:10:29)
+转载 http://blog.sina.com.cn/s/blog_ad0672d60102uy6w.html
+
+http://www.w3school.com.cn/schema/index.asp
+
+1.简介
+XSD即XML结构定义, XML Schemas Definition。其本身就是用xml描述的, 且遵循xml语法规则。一份XML schema文件描述了XML文档的结构.
+基本规则：
+    .必须以 XML 声明开头
+    .必须拥有唯一的根元素
+    .标签必须与结束标签相匹配
+    .元素对大小写敏感
+    .所有的元素都必须关闭
+    .所有的元素都必须正确地嵌套
+    .必须对特殊字符使用实体
+    
+<!-- xsd -->
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.w3school.com.cn"
+xmlns="http://www.w3school.com.cn"
+elementFormDefault="qualified">
+
+<xs:element name="note">
+    <xs:complexType>
+      <xs:sequence>
+<xs:element name="to" type="xs:string"/>
+<xs:element name="from" type="xs:string"/>
+<xs:element name="heading" type="xs:string"/>
+<xs:element name="body" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+</xs:element>
+
+</xs:schema>
+
+<!-- 对应的xml一个例子 -->
+<?xml version="1.0"?>
+<note>
+    <to>George</to>
+    <from>John</from>
+    <heading>Reminder</heading>
+    <body>Don't forget the meeting!</body>
+</note>
+
+2.定义一个元素
+<xs:element name="xxx" type="yyy"/>
+<xs:element表示定义一个元素
+xxx 指元素的名称，yyy 指元素的数据类型。XML Schema 拥有很多内建的数据类型
+
+3.定义一个属性
+<xs:attribute name="xxx" type="yyy"/>
+xs:attribute 表示定义一个属性
+xxx 指属性名称，yyy 则规定属性的数据类型。XML Schema 拥有很多内建的数据类型
+
+4.自定义简单类型(用于复合元素)
+<xs:simpleType name="sinceType">
+    <xs:restriction base="xs:int">
+        <xs:minInclusive value="0"/>
+        <xs:maxInclusive value="100"/>
+    </xs:restriction>
+</xs:simpleType>
+<xs:element name="goal" type="sinceType"/>
+xs:simpleType 表示接下来是简单类型的定义. 而使用此类型的元素，一般被称作复合元素
+
+5.自定义结构体(用于复合元素)
+<xs:complexType name="combinationType">
+    <xs:element name="Name" type="xs:string" />
+    <xs:element name="Age" type="xs:string" />
+</xs:complexType>
+<xs:element name="person" type="combinationType"/>
+xs:complexType 表示接下来是结构体的定义. 而使用此类型的元素，一般被称作复合元素.
+
+6.混合内容的自定义类型元素
+<xs:element name="letter">
+  <xs:complexType mixed="true">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="orderid" type="xs:positiveInteger"/>
+      <xs:element name="shipdate" type="xs:date"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+xs:complexType mixed="true" 指明了letter里边的内容是混合内容, 其可以是如下形式:
+    <letter>
+    Dear Mr.<name>John Smith</name>.
+    Your order <orderid>1032</orderid>
+    will be shipped on <shipdate>2001-07-13</shipdate>.
+    </letter>
+
+7.约束条件
+<xs:element name="age">
+<xs:simpleType>
+    <xs:restriction base="xs:int">
+        <xs:minInclusive value="1"/>
+        <xs:maxInclusive value="100"/>
+    </xs:restriction>
+</xs:simpleType>
+</xs:element>
+xs:restriction 表示接下来是对元素/属性的约束
+
+8.可选的和必需出现(属性)
+<xs:attribute name="lang" type="xs:string" use="required"/>
+use 表示出现的要求，required/optional/prohibited, 分别是必须出现/可选/不出现
+
+9.出现次数(元素)
+<xs:element name="child_name" type="xs:string" maxOccurs="10" minOccurs="0"/>
+minOccurs 表示最小出现的次数，并由数值/unbounded 来指定
+maxOccurs 表示最大出现的次数，并由数值/unbounded 来指定
+
+10.默认值和固定值(元素/属性)
+<xs:element name="pen" type="xs:string" default="minipen"/>
+<xs:attribute name="color" type="xs:string" fixed="red"/>
+default 指定默认值, fixed 指定该元素值固定
+
+11.数据类型限制(元素/属性)
+<xs:element name="Name">
+<xs:simpleType>
+  <xs:restriction base="xs:string">
+        <xs:minLength value="2" />
+         <xs:maxLength value="4" />
+   </xs:restriction>
+</xs:simpleType>
+</xs:element>
+xs:restriction 表示对元素/属性的限制.
+限制种类有以下类别:
+    .length        // 定义所允许的字符或者列表项目的精确数目。必须大于或等于0。
+    .minLength    // 定义所允许的字符或者列表项目的最小数目。必须大于或等于0。
+    .maxLength    // 定义所允许的字符或者列表项目的最大数目。必须大于或等于0。
+    
+    .minInclusive // 定义数值的下限。所允许的值必需大于或等于此值。 
+    .maxInclusive // 定义数值的上限。所允许的值必须小于或等于此值。
+    
+    .minExclusive // 定义数值的下限。所允许的值必需大于此值。
+    .maxExclusive // 定义数值的上限。所允许的值必须小于此值。
+    
+    .enumeration // 定义可接受值的一个列表
+    .pattern    // 定义可接受的字符的精确序列(规则表达式)。
+    .fractionDigits // 定义所允许的最大的小数位数。必须大于等于0
+    .totalDigits // 定义所允许的阿拉伯数字的精确位数。必须大于0。
+    .whiteSpace    // 定义空白字符（换行、回车、空格以及制表符）的处理方式。
+    
+12.空白字符的限制
+<xs:element name="address">
+
+<xs:simpleType>
+  <xs:restriction base="xs:string">
+    <xs:whiteSpace value="preserve"/>
+  </xs:restriction>
+</xs:simpleType>
+
+</xs:element> 
+xs:whiteSpace 指明对空白字符的限制, 取值有preserve/collapse/replace, 一次是保留/只保留字符中间必须的空格,且多个合并为一个/全部去掉
+
+13.子元素顺序
+<xs:element name="person">
+  <xs:complexType>
+    <xs:all>
+      <xs:element name="firstname" type="xs:string"/>
+      <xs:element name="lastname" type="xs:string"/>
+    </xs:all>
+  </xs:complexType>
+</xs:element>
+子元素顺寻有:
+    .xs:all         // 顺序不限, 每个子元素只准出现一次
+    .xs:choice      // 顺序不限, 每个子元素出现次数不限
+    .xs:sequence    // 顺序固定, 每个子元素出现次数不限
+
+14.元素组
+<xs:group name="persongroup">
+  <xs:sequence>
+    <xs:element name="firstname" type="xs:string"/>
+    <xs:element name="lastname" type="xs:string"/>
+    <xs:element name="birthday" type="xs:date"/>
+  </xs:sequence>
+</xs:group>
+
+<xs:element name="person" type="personinfo"/>
+
+<xs:complexType name="personinfo">
+  <xs:sequence>
+    <xs:group ref="persongroup"/>
+    <xs:element name="country" type="xs:string"/>
+  </xs:sequence>
+</xs:complexType>
+xs:group 指明定义一个元素组或者引用一个已经定义的元素组. 这样可以减少不必要的重复书写.
+
+15.属性组
+<xs:attributeGroup name="personattrgroup">
+  <xs:attribute name="firstname" type="xs:string"/>
+  <xs:attribute name="lastname" type="xs:string"/>
+  <xs:attribute name="birthday" type="xs:date"/>
+</xs:attributeGroup>
+
+<xs:element name="person">
+  <xs:complexType>
+    <xs:attributeGroup ref="personattrgroup"/>
+  </xs:complexType>
+</xs:element>
+xs:attributeGroup 指明定义一个属性组或者引用一个已经定义的属性组. 这样可以减少不必要的重复书写.
+
+16.不限定子元素
+<xs:element name="person">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="firstname" type="xs:string"/>
+      <xs:element name="lastname" type="xs:string"/>
+      <xs:any minOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+xs:any 指明可以包含一个不限定子元素. 如以下xml也是符合xsd的：
+    <person>
+        <firstname>David</firstname>
+        <lastname>Smith</lastname>
+        <children>
+            <childname>mike</childname>
+        </children>
+    </person>
+
+17.不限定属性
+<xs:element name="person">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="firstname" type="xs:string"/>
+      <xs:element name="lastname" type="xs:string"/>
+      <xs:anyAttribute minOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+anyAttribute 指明可以包含一个不限定属性
+
+18.替换元素
+<xs:element name="name" type="xs:string"/>
+<xs:element name="navn" substitutionGroup="name"/>
+substitutionGroup 指明本元素可以替换的元素. 可替换元素的类型必须和主元素相同，同时两者必须是全局元素。
+如以下xml片段都是合法的:
+    <customer>
+      <name>John Smith</name>
+    </customer>
+
+    <customer>
+      <navn>John Smith</navn>
+    </customer>
+
+19.阻止被替换
+<xs:element name="name" type="xs:string" block="substitution"/>
+<xs:element name="navn" substitutionGroup="name"/>
+block 指明阻止的内容，这里为被替换. 可替换元素的类型必须和主元素相同，同时两者必须是全局元素。
+本例就阻止用任何来替换name的声明，以下xml片段是错误的：
+    <customer>
+      <navn>John Smith</navn>
+    </customer>
+
+20.全局元素/本地元素
+全局元素指 "schema" 元素的直接子元素
+本地元素(Local elements)指嵌套在其他元素中的元素
+
+21.xsd内置数据类型
+xs:byte                 // 字节型，8位二进制位长
+xs:unsignedByte         // 无符号字节型
+xs:short                // 短整型, 16位二进制位长
+xs:unsignedShort        // 无符号短整型
+xs:integer              // 整型, 32位二进制位长
+xs:positiveInteger      // 只有正值的整型
+xs:nonPositiveInteger   // 只有非正值的整型
+xs:negativeInteger      // 只有负值的整型
+xs:nonNegativeInteger   // 只有非负值的整型
+xs:int                  // 整型, 32位二进制位长
+xs:long                 // 长整型, 64位二进制位长
+xs:unsignedLong         // 无符号长整型
+xs:float                // 浮点数, 32位二进制位长
+xs:double               // 双精度, 64位二进制位长
+
+xs:string               // 字符串
+xs:boolean              // 合法的布尔值是 true、false、1（表示 true） 以及 0（表示 false）
+xs:hexBinary            // 十六进制编码的二进制数据
+xs:base64Binary         // Base64 编码的二进制数据
+xs:date                 // 日期
+xs:decimal              // 货币类型
+xs:anyURI               // 假如某个 URI 含有空格，请用 替换它们
+
+22.调用其他程序/xml外部类型
+<xs:notation name="gif" public="image/gif" system="view.exe"/>
+xs:notation 表示此元素非xml类型, 可指定解析或执行的程序.
+xml文档中的内容类似如下:
+<image type="gif">demopic.gif</image>
+
+23.注释
+<xs:annotation>
+    <xs:documentation xml:lang="zh">
+    这是一份用于企业雇员信息描述的模式文档
+    </xs:documentation>
+</xs:annotation>
+"<!--"和"-->"仍可以使用，但是为了方便其他读者和应用程序来理解模式文档,XML Schema提供了三个元素来为模式提供注解:
+    .xs:annotation      // 作为documentation/appinfo的父元素
+    .xs:documentation   // 放置适合人阅读的信息
+    .xs:appinfo         // 工具、样式表和其他应用程序提供信息
+
+24.命名空间
+名称空间声明的一般形式为
+    第一部分是一个关键字xmlns:
+    第二部分是名称空间的前缀(标识符)
+    第三部分是一个等号
+    第四部分是双引号
+    第五部分是名称空间标识URI
+需要注意的是，名称空间的前缀不能为xml，因为在XML中这个字符串是保留作特殊用途的。
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+</xs:schema>
+    
+25.源命名空间
+在Schema中的定义和声明也可以引用其他的命名空间，我们可以把这种命名空间取名为源命名空间（source namespaces）。每一个Schema可以有多个源命名空间。 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+</xs:schema>
+
+26.目标命名空间
+每一个Schema可以有且只有一个目标命名空间。在一个给定的Schema中，每一个名称都是属于一个特定的名字空间的, 同时可以由targetNamespace来命名
+<?xml version=”1.0”>
+<xsd:schema xmlns:xsd=”http://www.w3.org/XML_Schema” targetNamespace=“http://www.test.com/ns/ns_test“>
+</xsd:schema>
+
+xsd文件中定义了一个targetNameSpace后，其内部定义的元素，属性，类型等都属于该targetNameSpace
+其自身或外部xsd文件使用这些元素，属性等都必须从定义的targetNameSpace中找
+
+27.引入xsd命名空间
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<import namespace="http://www.PartnerStore.com/PartsCatalog" schemaLocation="http://www.ProductStandards.org/repository/alpha.xsd"/> 
+</schema>
+import 必须指明使用xmlns:xsi，因为import/schemaLocation都是在xsi(xml schema instance)中定义.

@@ -1,0 +1,7 @@
+No grammar constraints (DTD or XML schema).....两种解决方法
+方法一：常用方法   关闭XML验证
+	工具栏：windows => preferences => xml => xml files => validation => Indicate when no grammar is specified:选择Ignore即可。
+方法二：（个人推荐）
+	添加 内容如下
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/2002/xmlspec/dtd/2.10/xmlspec.dtd">
