@@ -1,0 +1,72 @@
+
+server:
+  port: 9101
+  #servlet:
+      #context-path: /gatewayApi
+
+spring:
+  application:
+    name: consul-gateway
+  # 网关路由配置方式
+  cloud:
+    gateway:
+      discovery:
+        locator:
+        #locator.enabled 是否与服务注册于发现组件进行结合，通过 serviceId 转发到具体的服务实例。
+        #  默认为false，设为true便开启通过服务中心的自动根据 serviceId 创建路由的功能，若无特殊路由设置，可将行18（routes:）到行37去掉。
+          enabled: true
+          #路由访问方式：http://Gateway_HOST:Gateway_PORT/serviceId/**。
+        routes:
+          - id: consul-provider
+            # 重点！必须使用http进行转发，lb代表从注册中心获取服务
+            uri: lb://service-consul-provider
+            # 重点！转发该路径！,/userapi/**,
+            order: 100
+            predicates:
+              - Path= /cloudApi/**
+              # 转发路径
+            filters:
+            #- StripPrefix= 1  #去掉 转发路径 前缀的非负整数（对应）层数
+            #- SetPath=/
+          - id: consul-consumer
+            uri: lb://service-consul-consumer
+            order: 101
+            predicates:
+              - Path= /service-consul-consumer/**
+            filters:
+              - StripPrefix= 1
+              #- SetPath=/
+          - id: consul-consumer-feign
+            uri: lb://service-consul-consumer-feign
+            order: 101
+            predicates:
+              - Path= /service-consul-consumer-feign/**
+            filters:
+              - StripPrefix= 1
+              #- SetPath=/
+          - id: consul-consumer-feign-hystrix
+            uri: lb://service-consul-consumer-feign-hystrix
+            order: 101
+            predicates:
+              - Path= /service-consul-consumer-feign-hystrix/**
+            filters:
+              - StripPrefix= 1
+              #- SetPath=/
+
+    # 注册中心配置
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+      # HTTP健康检查
+        #healthCheckPath:  /gatewayApi/health
+        healthCheckInterval: 15s
+        # s-秒 m-分
+
+# 日志配置
+logging:
+  level:
+    org.springframework.cloud.gateway: info
+    org.springframework.http.server.reactive: debug
+    org.springframework.web.reactive: debug
+    reactor.ipc.netty: debug
