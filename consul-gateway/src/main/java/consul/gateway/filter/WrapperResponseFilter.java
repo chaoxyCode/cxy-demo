@@ -30,7 +30,7 @@ import java.nio.charset.Charset;
 @Component
 public class WrapperResponseFilter implements GlobalFilter, Ordered {
 
-    Logger logger = LoggerFactory.getLogger(WrapperResponseFilter.class);
+    private  final Logger logger = LoggerFactory.getLogger(WrapperResponseFilter.class);
 
     @Override
     public int getOrder() {
