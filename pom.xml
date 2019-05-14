@@ -303,6 +303,7 @@
     <!--模块（有时称作子项目）被构建成项目的一部分。列出的每个模块元素是指向该模块的目录的相对路径 -->
     <!-- Ps：继承和模块的区别：继承父不知子，但子知父。模块父知子，但子不知父。所以在具体的项目中一般都是继承和模块融合使用。 -->
     <modules>
+        <module>common</module>
         <module>cloud</module>
         <module>consul-gateway</module>
     </modules>
