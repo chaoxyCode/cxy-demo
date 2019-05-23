@@ -317,6 +317,21 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- 支持 junit4 start -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>2.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- 支持 junit4 end -->
+
     </dependencies>
 
 

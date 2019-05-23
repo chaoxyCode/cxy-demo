@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-
 /**
  * @desc: 统一报文返回格式
  * @author: chaoxy
@@ -14,12 +13,11 @@ import java.io.Serializable;
 @Data
 public class CommonResponse implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private String code;
+  private String code;
 
-    private String msg;
+  private String msg;
 
-    private Object data;
-
+  private Object data;
 }

@@ -1,4 +1,4 @@
-package common.core.doc;
+package common.core.interfaces;
 
 import java.lang.annotation.*;
 

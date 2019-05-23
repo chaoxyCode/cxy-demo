@@ -1,16 +1,15 @@
 package common.core.enums;
 
-import common.core.doc.Description;
-import lombok.Getter;
+import common.core.interfaces.Description;
 
 /**
  * 系统异常信息
  *
- * @version 1.0
  * @auther chaoxy
  * @date 2019-05-13
+ * @version 1.0
+ *
  */
-@Getter
 @Description("系统异常信息")
 public enum SysException {
 
@@ -36,12 +35,28 @@ public enum SysException {
   UPLOAD_FILE_SIZE_LIMIT("999998", "上传文件大小超过限制");
 
   /** 代码 */
-  private String code;
+  private String errorCode;
   /** 描述 */
-  private String desc;
+  private String errorMsg;
 
-  SysException(String code, String desc) {
-    this.code = code;
-    this.desc = desc;
+  public String getErrorCode() {
+    return errorCode;
+  }
+
+  public void setErrorCode(String errorCode) {
+    this.errorCode = errorCode;
+  }
+
+  public String getErrorMsg() {
+    return errorMsg;
+  }
+
+  public void setErrorMsg(String errorMsg) {
+    this.errorMsg = errorMsg;
+  }
+
+  SysException(String errorCode, String errorMsg) {
+    this.errorCode = errorCode;
+    this.errorMsg = errorMsg;
   }
 }
