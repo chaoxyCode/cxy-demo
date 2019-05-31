@@ -5,7 +5,7 @@ import common.core.interfaces.Description;
 /**
  * 系统异常信息
  *
- * @auther chaoxy
+ * @author chaoxy
  * @date 2019-05-13
  * @version 1.0
  *

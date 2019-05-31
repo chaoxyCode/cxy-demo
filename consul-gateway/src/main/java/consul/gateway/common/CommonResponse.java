@@ -5,10 +5,11 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @desc: 统一报文返回格式
- * @author: chaoxy
- * @date: 2019/03/20
- * @version: 1.0
+ * 统一报文返回格式
+ *
+ * @author chaoxy
+ * @date 2019/03/20
+ * @version 1.0
  */
 @Data
 public class CommonResponse implements Serializable {

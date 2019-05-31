@@ -1,6 +1,5 @@
 package consul.gateway.filter;
 
-
 import com.alibaba.fastjson.JSON;
 import consul.gateway.common.CommonResponse;
 import org.reactivestreams.Publisher;
@@ -22,32 +21,36 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.Charset;
 
 /**
- * @desc: 统一报文返回格式的过滤器
- * @author: chaoxy
- * @date: 2019/03/20
- * @version: 1.0
+ * 统一报文返回格式的过滤器
+ *
+ * @author chaoxy
+ * @date 2019/03/20
+ * @version 1.0
  */
 @Component
 public class WrapperResponseFilter implements GlobalFilter, Ordered {
 
-    private  final Logger logger = LoggerFactory.getLogger(WrapperResponseFilter.class);
+  private final Logger logger = LoggerFactory.getLogger(WrapperResponseFilter.class);
 
-    @Override
-    public int getOrder() {
-        // -1 is response write filter, must be called before that
-        return -2;
-    }
+  @Override
+  public int getOrder() {
+    // -1 is response write filter, must be called before that
+    return -2;
+  }
 
-    @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpResponse originalResponse = exchange.getResponse();
-        DataBufferFactory bufferFactory = originalResponse.bufferFactory();
-        ServerHttpResponseDecorator decoratedResponse = new ServerHttpResponseDecorator(originalResponse) {
-            @Override
-            public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                if (body instanceof Flux) {
-                    Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
-                    return super.writeWith(fluxBody.map(dataBuffer -> {
+  @Override
+  public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    ServerHttpResponse originalResponse = exchange.getResponse();
+    DataBufferFactory bufferFactory = originalResponse.bufferFactory();
+    ServerHttpResponseDecorator decoratedResponse =
+        new ServerHttpResponseDecorator(originalResponse) {
+          @Override
+          public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+            if (body instanceof Flux) {
+              Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
+              return super.writeWith(
+                  fluxBody.map(
+                      dataBuffer -> {
                         // probably should reuse buffers
                         byte[] content = new byte[dataBuffer.readableByteCount()];
                         dataBuffer.read(content);
@@ -64,19 +67,17 @@ public class WrapperResponseFilter implements GlobalFilter, Ordered {
                         String jsonStr = JSON.toJSONString(response);
                         logger.info("网关响应报文统一格式处理后响应信息：[{}]", jsonStr);
                         byte[] newRs = jsonStr.getBytes(Charset.forName("UTF-8"));
-                        //如果不重新设置长度则收不到消息。
+                        // 如果不重新设置长度则收不到消息。
                         originalResponse.getHeaders().setContentLength(newRs.length);
                         logger.info("网关响应报文统一格式结束----");
                         return bufferFactory.wrap(newRs);
-                    }));
-                }
-                // if body is not a flux. never got there.
-                return super.writeWith(body);
+                      }));
             }
+            // if body is not a flux. never got there.
+            return super.writeWith(body);
+          }
         };
-        // replace response with decorator
-        return chain.filter(exchange.mutate().response(decoratedResponse).build());
-    }
-
-
+    // replace response with decorator
+    return chain.filter(exchange.mutate().response(decoratedResponse).build());
+  }
 }

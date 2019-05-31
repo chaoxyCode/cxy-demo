@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
 /**
  * Socket公共类
  *
- * @auther chaoxy
+ * @author chaoxy
  * @date 2019-05-13
  * @version 1.0
  */

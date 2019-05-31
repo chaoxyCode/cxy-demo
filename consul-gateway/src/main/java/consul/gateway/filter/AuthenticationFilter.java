@@ -23,11 +23,10 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * @ClassName: AuthenticationFilter
- * @Description: 认证拦截器
- * @author: chaoxy
- * @date: 2019/3/26 9:41
- * @version: 1.0
+ *  认证拦截器
+ * @author chaoxy
+ * @date 2019/3/26 9:41
+ * @version 1.0
  */
 public class AuthenticationFilter implements GlobalFilter, Ordered {
 

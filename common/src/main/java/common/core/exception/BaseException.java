@@ -6,8 +6,8 @@ import lombok.Setter;
 /**
  * 基础异常
  *
- * @auther chaoxy
- * @date 2019-05-13
+ * @author chaoxy
+ * @date 2019/05/13
  * @version 1.0
  */
 @Getter

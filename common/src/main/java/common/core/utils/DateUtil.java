@@ -1,5 +1,8 @@
 package common.core.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,14 +12,17 @@ import java.util.Date;
 /**
  * Java1.7 以前的日期处理类
  *
- * @auther chaoxy
- * @date 2019-05-13
+ * @author chaoxy
+ * @date 2019/05/13
  * @version 1.0
  */
 public class DateUtil {
 
+  private static final Logger log = LoggerFactory.getLogger(DateUtil.class);
+
   /** 日期格式：yyyy-MM-dd */
   private static final String DATE_FORMAT = "yyyy-MM-dd";
+
   /** 24小时制日期格式：yyyy-MM-dd HH:mm:ss */
   private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -39,7 +45,7 @@ public class DateUtil {
       format = DATE_TIME_FORMAT;
     }
     SimpleDateFormat formatter = new SimpleDateFormat(format);
-    return formatter.format(new Date());
+    return formatter.format(getNowDate());
   }
 
   /**
@@ -60,11 +66,11 @@ public class DateUtil {
   /**
    * 提取一个月中的最后一天
    *
-   * @param day
+   * @param day 数字日
    * @return Date
    */
   public static Date getLastDate(long day) {
-    Date date = new Date();
+    Date date = getNowDate();
     long date3Hm = date.getTime() - 3600000 * 34 * day;
     return new Date(date3Hm);
   }
@@ -119,7 +125,7 @@ public class DateUtil {
    * @param value 时间字符串
    * @return String
    */
-  private static String converGMTStrDate(String value) {
+  private static String coverGMTStrDate(String value) {
     /*
      * GMT(Greenwich Mean Time)代表格林尼治标准时间，全球都以格林威治的时间作为标准来设定时间 UTC(Coordinated
      * Universal Time)代表世界协调时间（又称世界标准时间、世界统一时间）
@@ -159,7 +165,7 @@ public class DateUtil {
    * @param inValue 字符串日期
    * @return Date
    */
-  public static Date converString2Date(String inValue) {
+  public static Date coverString2Date(String inValue) {
     if (null == inValue || "".equals(inValue)) {
       return null;
     }
@@ -174,7 +180,7 @@ public class DateUtil {
       return str2Date(value, "yyyy年MM月dd日");
     }
     if (isGMT(value)) {
-      value = converGMTStrDate(value);
+      value = coverGMTStrDate(value);
     }
     if (value.contains("-")) {
       if (value.length() == 23) {
@@ -266,7 +272,7 @@ public class DateUtil {
     try {
       date = dateformat.parse(dateStr);
     } catch (ParseException e) {
-      e.printStackTrace();
+      log.error("解析字符串[{}]格式[{}]成日期时异常", dateStr, formatStr, e);
     }
     return date;
   }
@@ -306,13 +312,13 @@ public class DateUtil {
    * 日期增加天数
    *
    * @param loopDate 基准日期
-   * @param addOsubNum 增加的天数
+   * @param addDaysNum 增加的天数
    * @return 增加后的日期
    */
-  public static String nextDayDate(String loopDate, int addOsubNum) {
+  public static String nextDayDate(String loopDate, int addDaysNum) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(DateUtil.str2Date(loopDate, null));
-    calendar.add(Calendar.DAY_OF_YEAR, addOsubNum);
+    calendar.add(Calendar.DAY_OF_YEAR, addDaysNum);
     return DateUtil.date2Str(calendar.getTime(), null);
   }
 

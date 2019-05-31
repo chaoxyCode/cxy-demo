@@ -115,6 +115,11 @@
             <!-- https://blog.csdn.net/J080624/article/details/80632121  -->
             <!-- 日志文件管理包，提高性能log输出性能（ slf4j + log4j/logback ），Logback也依赖janino -->
             <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.codehaus.janino</groupId>
                 <artifactId>commons-compiler</artifactId>
                 <version>${janino.version}</version>

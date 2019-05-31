@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 /**
  * 身份证公共类
  *
- * @auther chaoxy
+ * @author chaoxy
  * @date 2019-05-13
  * @version 1.0
  */

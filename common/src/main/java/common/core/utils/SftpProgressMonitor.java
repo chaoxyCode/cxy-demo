@@ -11,8 +11,8 @@ import java.util.TimerTask;
 /**
  * Sftp文件传输进度记录类
  *
- * @auther chaoxy
- * @date 2019-05-13
+ * @author chaoxy
+ * @date 2019/05/13
  * @version 1.0
  */
 public class SftpProgressMonitor extends TimerTask implements com.jcraft.jsch.SftpProgressMonitor {

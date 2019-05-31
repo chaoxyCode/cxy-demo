@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Sftp文件实体Bean
  *
- * @auther chaoxy
+ * @author chaoxy
  * @date 2019-05-13
  * @version 1.0
  */

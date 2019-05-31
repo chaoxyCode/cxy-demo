@@ -15,7 +15,7 @@ import java.io.StringWriter;
  * Xml工具类-JAXB
  *
  * @version 1.0
- * @auther chaoxy
+ * @author chaoxy
  * @date 2019-05-23
  */
 public class XmlUtil {

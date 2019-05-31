@@ -7,8 +7,8 @@ import java.util.UUID;
 /**
  * 字符串公共类
  *
- * @auther chaoxy
- * @date 2019-05-13
+ * @author chaoxy
+ * @date 2019/05/13
  * @version 1.0
  */
 public class StringUtil {
@@ -74,23 +74,24 @@ public class StringUtil {
     return (str.charAt(0) + "").toLowerCase() + str.substring(1);
   }
 
-	/**
-	 * list转String
-	 *
-	 * @param list
-	 * @return String
-	 */
-	public static String list2String(List<?> list) {
-		if (list == null || list.isEmpty()) {
-			return "";
-		}
-		StringBuilder sb = new StringBuilder();
-		for (Object object : list) {
-			sb.append(object.toString() + ",");
-		}
-		String rs = sb.toString();
-		return rs.substring(0, rs.length() - 1);
-	}
+  /**
+   * list转String
+   *
+   * @param list
+   * @return String
+   */
+  public static String list2String(List<?> list) {
+    if (list == null || list.isEmpty()) {
+      return "";
+    }
+    StringBuilder sb = new StringBuilder();
+    for (Object object : list) {
+      sb.append(object.toString());
+      sb.append(",");
+    }
+    String rs = sb.toString();
+    return rs.substring(0, rs.length() - 1);
+  }
 
   /**
    * 获取数字型随机数字
@@ -99,17 +100,17 @@ public class StringUtil {
    * @return String
    */
   public static String getRandomNum(int numLen) {
-		if (numLen < 1 || numLen > 99) {
-			numLen = 6;
-		}
-		StringBuilder rs = new StringBuilder();
-		for (int i = 0; i < numLen; i++) {
-			Random random = new Random();
-			int randomInt = random.nextInt() % 10;
-			rs.append(Math.abs(randomInt));
-		}
-		return rs.toString();
-	}
+    if (numLen < 1 || numLen > 99) {
+      numLen = 6;
+    }
+    StringBuilder rs = new StringBuilder();
+    for (int i = 0; i < numLen; i++) {
+      Random random = new Random();
+      int randomInt = random.nextInt() % 10;
+      rs.append(Math.abs(randomInt));
+    }
+    return rs.toString();
+  }
 
   /**
    * unicode 转换成 utf-8
@@ -165,24 +166,21 @@ public class StringUtil {
           }
           outBuffer.append((char) value);
         } else {
-          if (aChar == 't'){
-          	aChar = '\t';
-		  } else if (aChar == 'r') {
-          	aChar = '\r';
-		  }
-          else if (aChar == 'n') {
-          	aChar = '\n';
-		  }
-          else if (aChar == 'f') {
-          	aChar = '\f';
-		  }
+          if (aChar == 't') {
+            aChar = '\t';
+          } else if (aChar == 'r') {
+            aChar = '\r';
+          } else if (aChar == 'n') {
+            aChar = '\n';
+          } else if (aChar == 'f') {
+            aChar = '\f';
+          }
           outBuffer.append(aChar);
         }
       } else {
-      	outBuffer.append(aChar);
-	  }
+        outBuffer.append(aChar);
+      }
     }
     return outBuffer.toString();
   }
-
 }

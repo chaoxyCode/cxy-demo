@@ -15,27 +15,25 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @ClassName ExceptionConfig
- * @Description 异常配置
- * @auther chaoxingyu
- * @Date 2019-03-23 15:06
- * @Version 1.0
+ * 异常配置
+ *
+ * @author chaoxy @date 2019-03-23 15:06 @version 1.0
  */
 @Configuration
 public class ExceptionConfig {
 
-    /**
-     * 自定义异常处理[@@]注册Bean时依赖的Bean，会从容器中直接获取，所以直接注入即可
-     */
-    @Primary
-    @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    public ErrorWebExceptionHandler errorWebExceptionHandler(ObjectProvider<List<ViewResolver>> viewResolversProvider, ServerCodecConfigurer serverCodecConfigurer) {
-        CustomErrorWebExceptionHandler jsonExceptionHandler = new CustomErrorWebExceptionHandler();
-        jsonExceptionHandler.setViewResolvers(viewResolversProvider.getIfAvailable(Collections::emptyList));
-        jsonExceptionHandler.setMessageWriters(serverCodecConfigurer.getWriters());
-        jsonExceptionHandler.setMessageReaders(serverCodecConfigurer.getReaders());
-        return jsonExceptionHandler;
-    }
-
+  /** 自定义异常处理[@@]注册Bean时依赖的Bean，会从容器中直接获取，所以直接注入即可 */
+  @Primary
+  @Bean
+  @Order(Ordered.HIGHEST_PRECEDENCE)
+  public ErrorWebExceptionHandler errorWebExceptionHandler(
+      ObjectProvider<List<ViewResolver>> viewResolversProvider,
+      ServerCodecConfigurer serverCodecConfigurer) {
+    CustomErrorWebExceptionHandler jsonExceptionHandler = new CustomErrorWebExceptionHandler();
+    jsonExceptionHandler.setViewResolvers(
+        viewResolversProvider.getIfAvailable(Collections::emptyList));
+    jsonExceptionHandler.setMessageWriters(serverCodecConfigurer.getWriters());
+    jsonExceptionHandler.setMessageReaders(serverCodecConfigurer.getReaders());
+    return jsonExceptionHandler;
+  }
 }
