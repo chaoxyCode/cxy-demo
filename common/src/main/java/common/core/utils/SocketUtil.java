@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Socket公共类
@@ -28,27 +29,43 @@ public class SocketUtil {
    * @return 响应数据
    */
   public static String sendMsg(String ip, int port, boolean isUdp, String msg) {
-    log.info("Socket通讯：请求地址[" + ip + ":" + port + "], " + "请求数据[" + msg + "]");
+    log.info("Socket通讯：请求地址[{}:{}], 请求数据[{}]", ip, port, msg);
     // 端口号是一个16位的二进制数字，端口范围: 0-65535
-    if (0 > port || 65535 < port) {
+    int portMax = 65535;
+    if (0 > port || portMax < port) {
       log.error("通讯配置错误：Socket通讯时端口不在允许的范围内！");
       return null;
     }
-    byte[] sendData = null;
+    byte[] sendData;
     try {
-      sendData = msg.getBytes("UTF-8");
-    } catch (UnsupportedEncodingException e) {
+      sendData = msg.getBytes(StandardCharsets.UTF_8);
+    } catch (Exception e) {
       log.error("请求数据转码异常：", e);
       return null;
     }
-    String rspMsg = "";
+    String rspMsg;
     if (isUdp) {
       rspMsg = sendMsgWithUdp(ip, port, sendData);
     } else {
       rspMsg = sendMsgWithTcp(ip, port, sendData);
     }
-    log.info("Socket通讯：请求地址[" + ip + ":" + port + "], " + "响应数据[" + msg + "]");
+    log.info("Socket通讯：请求地址[{}:{}], 响应数据[{}]", ip, port, msg);
     return rspMsg;
+  }
+
+  /**
+   * 关闭流
+   *
+   * @param closable 流
+   */
+  private static void close(Closeable closable) {
+    if (closable != null) {
+      try {
+        closable.close();
+      } catch (IOException e) {
+        log.error("Socket通讯结束关闭流时出现异常: ", e);
+      }
+    }
   }
 
   /**
@@ -84,36 +101,17 @@ public class SocketUtil {
       while ((line = br.readLine()) != null) {
         sb.append(line);
       }
-      br.close();
-      isr.close();
-      is.close();
-      os.close();
-      client.close();
       return sb.toString();
     } catch (UnknownHostException e) {
       log.error("连接主机异常: ", e);
     } catch (IOException e) {
       log.error("读取数据异常: ", e);
     } finally {
-      try {
-        if (null != br) {
-          br.close();
-        }
-        if (null != isr) {
-          isr.close();
-        }
-        if (null != is) {
-          is.close();
-        }
-        if (null != os) {
-          os.close();
-        }
-        if (null != client) {
-          client.close();
-        }
-      } catch (Exception e) {
-        log.error("Socket通讯结束关闭时出现异常: ", e);
-      }
+      close(br);
+      close(isr);
+      close(is);
+      close(os);
+      close(client);
     }
     return null;
   }
@@ -147,9 +145,7 @@ public class SocketUtil {
     } catch (IOException e) {
       log.error("读取数据异常: ", e);
     } finally {
-      if (null != mSocket) {
-        mSocket.close();
-      }
+      close(mSocket);
     }
     return null;
   }

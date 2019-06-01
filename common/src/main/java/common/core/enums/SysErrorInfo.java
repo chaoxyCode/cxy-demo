@@ -11,7 +11,7 @@ import common.core.interfaces.Description;
  *
  */
 @Description("系统异常信息")
-public enum SysException {
+public enum SysErrorInfo {
 
   /** 默认成功码 */
   SUCCESS("000000", "默认成功码"),
@@ -55,7 +55,7 @@ public enum SysException {
     this.errorMsg = errorMsg;
   }
 
-  SysException(String errorCode, String errorMsg) {
+  SysErrorInfo(String errorCode, String errorMsg) {
     this.errorCode = errorCode;
     this.errorMsg = errorMsg;
   }

@@ -22,8 +22,7 @@ public class BaseException extends RuntimeException {
   private String errorMsg;
 
   public BaseException() {
-    this.errorCode = "000000";
-    this.errorMsg = "交易成功";
+    super();
   }
 
   public BaseException(String errorCode, String errorMsg) {
