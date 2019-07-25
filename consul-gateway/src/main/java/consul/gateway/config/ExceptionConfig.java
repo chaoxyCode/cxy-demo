@@ -22,18 +22,18 @@ import java.util.List;
 @Configuration
 public class ExceptionConfig {
 
-  /** 自定义异常处理[@@]注册Bean时依赖的Bean，会从容器中直接获取，所以直接注入即可 */
-  @Primary
-  @Bean
-  @Order(Ordered.HIGHEST_PRECEDENCE)
-  public ErrorWebExceptionHandler errorWebExceptionHandler(
-      ObjectProvider<List<ViewResolver>> viewResolversProvider,
-      ServerCodecConfigurer serverCodecConfigurer) {
-    CustomErrorWebExceptionHandler jsonExceptionHandler = new CustomErrorWebExceptionHandler();
-    jsonExceptionHandler.setViewResolvers(
-        viewResolversProvider.getIfAvailable(Collections::emptyList));
-    jsonExceptionHandler.setMessageWriters(serverCodecConfigurer.getWriters());
-    jsonExceptionHandler.setMessageReaders(serverCodecConfigurer.getReaders());
-    return jsonExceptionHandler;
-  }
+    /** 自定义异常处理[@@]注册Bean时依赖的Bean，会从容器中直接获取，所以直接注入即可 */
+    @Primary
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public ErrorWebExceptionHandler errorWebExceptionHandler(
+            ObjectProvider<List<ViewResolver>> viewResolversProvider,
+            ServerCodecConfigurer serverCodecConfigurer) {
+        CustomErrorWebExceptionHandler jsonExceptionHandler = new CustomErrorWebExceptionHandler();
+        jsonExceptionHandler.setViewResolvers(
+                viewResolversProvider.getIfAvailable(Collections::emptyList));
+        jsonExceptionHandler.setMessageWriters(serverCodecConfigurer.getWriters());
+        jsonExceptionHandler.setMessageReaders(serverCodecConfigurer.getReaders());
+        return jsonExceptionHandler;
+    }
 }
