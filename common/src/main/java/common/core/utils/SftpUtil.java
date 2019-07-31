@@ -515,7 +515,7 @@ public class SftpUtil {
                 this.sftp.get(
                         fileRemotePath,
                         fileLocalPath,
-                        new SftpProgressMonitor(sftpLsEntry.getFileSize()),
+                        new SftpProgressMonitorImpl(sftpLsEntry.getFileSize()),
                         ChannelSftp.OVERWRITE);
             }
         }

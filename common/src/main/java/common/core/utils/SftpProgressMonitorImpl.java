@@ -15,9 +15,9 @@ import java.util.TimerTask;
  * @date 2019/05/13
  * @version 1.0
  */
-public class SftpProgressMonitor extends TimerTask implements com.jcraft.jsch.SftpProgressMonitor {
+public class SftpProgressMonitorImpl extends TimerTask implements com.jcraft.jsch.SftpProgressMonitor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SftpProgressMonitor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SftpProgressMonitorImpl.class);
 
     /** 默认间隔时间为5秒 */
     private long progressInterval = 5 * 1000;
@@ -37,7 +37,7 @@ public class SftpProgressMonitor extends TimerTask implements com.jcraft.jsch.Sf
     /** 记录是否已启动timer记时器 */
     private boolean isScheduled = false;
 
-    public SftpProgressMonitor(long fileSize) {
+    public SftpProgressMonitorImpl(long fileSize) {
         this.fileSize = fileSize;
     }
 
