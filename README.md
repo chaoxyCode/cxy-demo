@@ -3,6 +3,6 @@
 
 # 项目技术
 ## JDK 1.8
-## Maven 3.6.3
-## spring boot 2.3.0.RELEASE
-## spring cloud Hoxton.SR4
+## Maven 3.8.2
+## spring boot 2.5.4.RELEASE
+## spring cloud 2020.0.3
