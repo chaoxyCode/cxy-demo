@@ -53,6 +53,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
+    /* 注意：两种配置方式只能选择一种来配置，比如在 application.yml 配置了就不要再通过代码添加 GroupedOpenApi ，否则会报错，除非你设置的 group 不一样。*/
+
     /**
      * 设置全局 API 文档信息
      *
