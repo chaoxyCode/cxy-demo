@@ -97,6 +97,9 @@
         <!-- junit5 配置 end -->
 
         <mybatis.generator.version>1.4.0</mybatis.generator.version>
+
+        <!-- swagger3 API文档 -->
+        <springdoc.version>1.5.10</springdoc.version>
     </properties>
     <!--项目创建年份，4位数字。当产生版权信息时需要使用这个值。 -->
     <description>Demo project for Spring Boot</description>
@@ -381,6 +384,12 @@
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${springboot.pagehelper.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -456,6 +465,7 @@
         <module>common</module>
         <module>cloud</module>
         <module>consul-gateway</module>
+        <module>swagger3-springdoc</module>
     </modules>
 
 
