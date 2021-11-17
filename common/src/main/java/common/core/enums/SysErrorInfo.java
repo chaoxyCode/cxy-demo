@@ -1,6 +1,7 @@
 package common.core.enums;
 
 import common.core.interfaces.Description;
+import lombok.Getter;
 
 /**
  * 系统异常信息
@@ -10,6 +11,7 @@ import common.core.interfaces.Description;
  * @version 1.0
  */
 @Description("系统异常信息")
+@Getter
 public enum SysErrorInfo {
 
     /** 默认成功码 */
@@ -34,17 +36,9 @@ public enum SysErrorInfo {
     UPLOAD_FILE_SIZE_LIMIT("999998", "上传文件大小超过限制");
 
     /** 代码 */
-    private String errorCode;
+    private final String errorCode;
     /** 描述 */
-    private String errorMsg;
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public String getErrorMsg() {
-        return errorMsg;
-    }
+    private final String errorMsg;
 
     SysErrorInfo(String errorCode, String errorMsg) {
         this.errorCode = errorCode;

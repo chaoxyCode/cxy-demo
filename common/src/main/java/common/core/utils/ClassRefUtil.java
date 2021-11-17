@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * 类反射公共类
  *
- * @auther chaoxy
+ * @author chaoxy
  * @date 2019-05-13
  */
 public class ClassRefUtil {
