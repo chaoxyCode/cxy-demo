@@ -10,7 +10,7 @@
     <groupId>com.cxy</groupId>
     <!-- 本项目的唯一ID，一个groupId下面可能多个项目，就是靠artifactId来区分的 -->
     <artifactId>platform</artifactId>
-    <version>1.0.0</version>
+    <version>${revision}</version>
     <!-- 打包的机制，如pom,jar, maven-plugin, ejb, war, ear, rar, par，默认为jar -->
     <packaging>pom</packaging>
 
@@ -28,6 +28,8 @@
 
     <!-- 常量配置 -->
     <properties>
+        <!-- 多模块项目版本 -->
+        <revision>1.0.0-SNAPSHOT</revision>
         <!--键值对，Properties可以在整个POM中使用，也可以作为触发条件。格式是<name>value</name>。 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -121,6 +123,7 @@
         <module>cloud</module>
         <module>consul-gateway</module>
         <module>swagger3-springdoc</module>
+        <module>uaa</module>
     </modules>
 
 

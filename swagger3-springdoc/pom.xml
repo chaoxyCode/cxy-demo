@@ -5,7 +5,8 @@
     <parent>
         <artifactId>platform</artifactId>
         <groupId>com.cxy</groupId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
