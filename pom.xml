@@ -25,6 +25,14 @@
     <description>Demo project for Spring Boot</description>
     <!-- 项目信息设置 end -->
 
+    <!--模块（有时称作子项目）被构建成项目的一部分。列出的每个模块元素是指向该模块的目录的相对路径 -->
+    <!-- Ps：继承和模块的区别：继承父不知子，但子知父。模块父知子，但子不知父。所以在具体的项目中一般都是继承和模块融合使用。 -->
+    <modules>
+        <module>common</module>
+        <module>cloud</module>
+        <module>swagger3-springdoc</module>
+        <module>uaa</module>
+    </modules>
 
     <!-- 常量配置 -->
     <properties>
@@ -114,17 +122,6 @@
         <!-- swagger3 API文档 -->
         <springdoc.version>1.5.10</springdoc.version>
     </properties>
-
-
-    <!--模块（有时称作子项目）被构建成项目的一部分。列出的每个模块元素是指向该模块的目录的相对路径 -->
-    <!-- Ps：继承和模块的区别：继承父不知子，但子知父。模块父知子，但子不知父。所以在具体的项目中一般都是继承和模块融合使用。 -->
-    <modules>
-        <module>common</module>
-        <module>cloud</module>
-        <module>consul-gateway</module>
-        <module>swagger3-springdoc</module>
-        <module>uaa</module>
-    </modules>
 
 
     <!--依赖关系 该元素描述了项目相关的所有依赖。这些依赖组成了项目构建过程中的一个个环节。它们自动从项目定义的仓库中下载。要获取更多信息，请看项目依赖机制。 -->
